@@ -31,4 +31,13 @@ export const auth = betterAuth({
     // autoSignIn: false,
     // requireEmailVerification: true,
   },
+
+  socialProviders: {
+    google: {
+      prompt: "select_account consent",
+      accessType: "offline",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
 });

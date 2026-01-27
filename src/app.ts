@@ -1,5 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth";
+import errorHandler from "./middleware/globalErrorHandler";
 
 const app = express();
 
@@ -10,16 +13,16 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json());
 
+app.use(express.json());
+// better-auth all api rutes
+app.all("/api/auth/*splat", toNodeHandler(auth));
+
+// test api
 app.get("/", (req, res) => {
   res.send("Welcome to the pharmacies API");
 });
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-  next(err);
-});
+app.use(errorHandler);
 
 export default app;

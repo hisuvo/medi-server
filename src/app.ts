@@ -3,6 +3,7 @@ import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import errorHandler from "./middleware/globalErrorHandler";
+import { categoryRouter } from "./modules/category/category.routes";
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/", (req, res) => {
   res.send("Welcome to the pharmacies API");
 });
+
+app.use("/api/v1/category", categoryRouter);
 
 app.use(errorHandler);
 

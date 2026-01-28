@@ -1,12 +1,10 @@
 import express from "express";
-import auth from "../../middleware/auth";
-import { UserRole } from "../../constants/user-role";
+import { categoryController } from "./category.controller";
 
 const router = express.Router();
 
-router.get("/", auth(UserRole.CUSTOMER, UserRole.ADMIN), async (req, res) => {
-  const user = await req.user;
-  res.status(200).json({ success: true, user });
-});
+router.get("/", categoryController.getCategory);
+
+router.post("/", categoryController.createCategory);
 
 export { router as categoryRouter };

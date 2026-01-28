@@ -1,9 +1,10 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import errorHandler from "./middleware/globalErrorHandler";
 import { categoryRouter } from "./modules/category/category.routes";
+import { notFound } from "./middleware/notFound";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/category", categoryRouter);
 
+app.use(notFound);
 app.use(errorHandler);
 
 export default app;

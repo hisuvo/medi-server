@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { medicineService } from "./medicine.service";
 import { UserRole } from "../../constants/user-role";
 
-const getMedicine = async (req: Request, res: Response) => {
+const getMedicines = async (req: Request, res: Response) => {
   try {
-    const result = await medicineService.getMedicine();
+    const result = await medicineService.getMedicines();
 
     res.status(200).json({
       success: true,
@@ -91,9 +91,40 @@ const updateMedicine = async (req: Request, res: Response) => {
   }
 };
 
+const deleteMedicine = async (req: Request, res: Response) => {
+  try {
+    const { medicineId } = req.params;
+
+    if (!medicineId) {
+      throw new Error("Medicine Id is required!");
+    }
+
+    const isSeller = req.user?.role === UserRole.SELLER;
+    const userId = req.user?.id;
+
+    const result = await medicineService.deleteMedicine(
+      medicineId as string,
+      userId as string,
+      isSeller,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Medicine deleted successfully",
+      result,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      error: "medicine delete failed",
+      details: error.message,
+    });
+  }
+};
+
 export const medicineController = {
-  getMedicine,
+  getMedicines,
   getMedicineById,
   createMedicine,
   updateMedicine,
+  deleteMedicine,
 };

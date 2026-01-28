@@ -5,7 +5,7 @@ import { UserRole } from "../../constants/user-role";
 
 const router = Router();
 
-router.get("/", medicineController.getMedicine);
+router.get("/", medicineController.getMedicines);
 
 router.get("/:medicineId", medicineController.getMedicineById);
 
@@ -15,6 +15,12 @@ router.put(
   "/:medicineId",
   auth(UserRole.SELLER),
   medicineController.updateMedicine,
+);
+
+router.delete(
+  "/:medicineId",
+  auth(UserRole.SELLER),
+  medicineController.deleteMedicine,
 );
 
 export { router as medicineRouter };

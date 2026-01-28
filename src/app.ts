@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/category", categoryRouter);
-app.use("/api/v1/medicine", medicineRouter);
+app.use("/api/v1/medicines", medicineRouter);
 
 app.use(notFound);
 app.use(errorHandler);

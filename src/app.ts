@@ -1,12 +1,13 @@
-import express from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import errorHandler from "./middleware/globalErrorHandler";
 import { categoryRouter } from "./modules/category/category.routes";
 import { notFound } from "./middleware/notFound";
+import { medicineRouter } from "./modules/medicine/medicine.route";
 
-const app = express();
+const app: Application = express();
 
 // middlewate
 app.use(
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/medicine", medicineRouter);
 
 app.use(notFound);
 app.use(errorHandler);

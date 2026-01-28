@@ -11,6 +11,12 @@ router.get("/:medicineId", medicineController.getMedicineById);
 
 router.post("/", auth(UserRole.SELLER), medicineController.createMedicine);
 
+router.put(
+  "/:medicineId",
+  auth(UserRole.SELLER),
+  medicineController.updateMedicine,
+);
+
 export { router as medicineRouter };
 
 /**

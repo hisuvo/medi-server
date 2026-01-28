@@ -1,3 +1,4 @@
+import { date } from "better-auth";
 import { prisma } from "../../lib/prisma";
 import { medicinePayload } from "./medinice.type";
 
@@ -23,8 +24,40 @@ const createMedicine = async (payload: medicinePayload) => {
   });
 };
 
+const updateMedicine = async (
+  payload: medicinePayload,
+  medicineId: string,
+  userId: string,
+  isSeller: boolean,
+) => {
+  if (!isSeller) {
+    throw new Error("Only sellers can update medicines");
+  }
+
+  const medicin = await prisma.medicine.findFirst({
+    where: {
+      id: medicineId,
+      sellerId: userId,
+    },
+  });
+
+  if (!medicin) {
+    throw new Error("You are not the owner of this medicine");
+  }
+
+  const result = await prisma.medicine.update({
+    where: {
+      id: medicineId,
+    },
+    data: payload,
+  });
+
+  return result;
+};
+
 export const medicineService = {
   getMedicine,
   getMedicineById,
   createMedicine,
+  updateMedicine,
 };

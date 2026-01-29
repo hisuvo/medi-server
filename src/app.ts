@@ -6,13 +6,14 @@ import errorHandler from "./middleware/globalErrorHandler";
 import { categoryRouter } from "./modules/category/category.routes";
 import { notFound } from "./middleware/notFound";
 import { medicineRouter } from "./modules/medicine/medicine.route";
+import { userRouter } from "./modules/user/user.route";
 
 const app: Application = express();
 
 // middlewate
 app.use(
   cors({
-    origin: process.env.APP_URL || "http://localhost:3000", // client side url
+    origin: process.env.APP_URL || "http://localhost:3000",
     credentials: true,
   }),
 );
@@ -21,12 +22,13 @@ app.use(express.json());
 // better-auth all api rutes
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
-// test api
+// welcome route
 app.get("/", (req, res) => {
-  res.send("Welcome to the pharmacies API");
+  res.send("Welcome to you from pharmacies API");
 });
 
-app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/medicines", medicineRouter);
 
 app.use(notFound);

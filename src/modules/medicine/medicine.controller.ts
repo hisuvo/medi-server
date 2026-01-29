@@ -13,6 +13,7 @@ const getMedicines = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(400).json({
+      success: false,
       error: "Medicine retrived failed",
       details: error,
     });
@@ -34,6 +35,7 @@ const getMedicineById = async (req: Request, res: Response) => {
     });
   } catch (e) {
     res.status(400).json({
+      success: false,
       error: "medicine retrived failed",
       details: e,
     });
@@ -54,6 +56,7 @@ const createMedicine = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(400).json({
+      success: false,
       error: "Medicine creation failed",
       details: error,
     });
@@ -85,6 +88,7 @@ const updateMedicine = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.status(400).json({
+      success: false,
       error: "medicine update failed",
       details: error.message,
     });
@@ -115,6 +119,7 @@ const deleteMedicine = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.status(400).json({
+      success: false,
       error: "medicine delete failed",
       details: error.message,
     });

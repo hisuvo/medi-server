@@ -1,7 +1,31 @@
 import { Request, Response } from "express";
 import { ordersService } from "./order.service";
 
-const getOrders = async (req: Request, res: Response) => {};
+const getOrders = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      throw new Error("You are Unauthorized!");
+    }
+
+    const result = await ordersService.getOrders(user);
+
+    res.status(209).json({
+      success: true,
+      message: "Order retrived successfully",
+      result,
+    });
+  } catch (error: any) {
+    let details = error.message ? error.message : error;
+
+    res.status(400).json({
+      success: true,
+      message: "Order retrived failed",
+      details,
+    });
+  }
+};
 
 const createOrders = async (req: Request, res: Response) => {
   try {
@@ -30,9 +54,9 @@ const createOrders = async (req: Request, res: Response) => {
   } catch (error: any) {
     let details = error.message ? error.message : error;
 
-    res.status(209).json({
-      success: true,
-      message: "Order created successfully",
+    res.status(400).json({
+      success: false,
+      message: "Order created failed",
       details,
     });
   }

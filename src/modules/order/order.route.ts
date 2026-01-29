@@ -5,7 +5,11 @@ import { UserRole } from "../../constants/user-role";
 
 const router = Router();
 
-router.get("/", () => console.log("order router is connected"));
+router.get(
+  "/",
+  auth(UserRole.CUSTOMER, UserRole.SELLER, UserRole.ADMIN),
+  ordersController.getOrders,
+);
 
 router.post("/", auth(UserRole.CUSTOMER), ordersController.createOrders);
 

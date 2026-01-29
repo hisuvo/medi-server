@@ -1,7 +1,25 @@
+import { UserRole } from "../../constants/user-role";
 import { prisma } from "../../lib/prisma";
+import { userType } from "../../types/user";
 import { createOrdersPayload } from "./create-order.type";
 
-const getOrders = async () => {};
+const getOrders = async (user: userType) => {
+  // customer can see only their own orders
+  // admins and sellers can access all orders
+
+  if (user.role === UserRole.CUSTOMER) {
+    const ownOrder = await prisma.order.findMany({
+      where: {
+        id: user.id,
+      },
+    });
+
+    return ownOrder;
+  }
+
+  const ordersData = await prisma.order.findMany();
+  return ordersData;
+};
 
 const createOrders = async (payload: createOrdersPayload) => {
   const { userId, items } = payload;

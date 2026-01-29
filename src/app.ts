@@ -7,6 +7,7 @@ import { categoryRouter } from "./modules/category/category.routes";
 import { notFound } from "./middleware/notFound";
 import { medicineRouter } from "./modules/medicine/medicine.route";
 import { userRouter } from "./modules/user/user.route";
+import { OrderRouter } from "./modules/order/order.route";
 
 const app: Application = express();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/medicines", medicineRouter);
+app.use("/api/v1/orders", OrderRouter);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -11,12 +11,18 @@ router.get(
   ordersController.getOrders,
 );
 
-router.post("/", auth(UserRole.CUSTOMER), ordersController.createOrders);
-
 router.get(
   "/:orderId",
   auth(UserRole.CUSTOMER, UserRole.SELLER),
   ordersController.getOrderById,
+);
+
+router.post("/", auth(UserRole.CUSTOMER), ordersController.createOrders);
+
+router.patch(
+  "/:orderId",
+  auth(UserRole.SELLER),
+  ordersController.updateOrderStatus,
 );
 
 export { router as OrderRouter };

@@ -2,6 +2,7 @@ import { UserRole } from "../../constants/user-role";
 import { prisma } from "../../lib/prisma";
 import { userType } from "../../types/user";
 import { createOrdersPayload } from "./create-order.type";
+import { updateOrderStatusPayload } from "./udpate-order.type";
 
 const getOrders = async (user: userType) => {
   // customer can see only their own orders
@@ -51,16 +52,53 @@ const createOrders = async (payload: createOrdersPayload) => {
 };
 
 const getOrderById = async (orderId: string, userId: string) => {
-  return await prisma.order.findFirst({
+  const orderData = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+    select: {
+      id: true,
+      userId: true,
+    },
+  });
+
+  if (orderData?.userId !== userId) {
+    throw new Error("You are unauthrozied!");
+  }
+
+  const order = await prisma.order.findFirst({
     where: {
       id: orderId,
       userId,
     },
   });
+
+  return order;
+};
+
+const updateOrderStatus = async (
+  payload: updateOrderStatusPayload,
+  orderId: string,
+  isSeller: boolean,
+) => {
+  if (!isSeller) {
+    throw new Error("Only Seller can update user status");
+  }
+
+  const result = await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status: payload.status,
+    },
+  });
+  return result;
 };
 
 export const ordersService = {
   getOrders,
   createOrders,
   getOrderById,
+  updateOrderStatus,
 };

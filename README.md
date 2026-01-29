@@ -46,3 +46,7 @@ http://localhost:5000/api/v1/orders
 <!-- user own orders and seller, admin get all orders -->
 
 http://localhost:5000/api/v1/orders
+
+<!-- customer can see only one details -->
+
+http://localhost:5000/api/v1/orders/21e7d004-b1cc-4489-bc81-0bd8dbefb200

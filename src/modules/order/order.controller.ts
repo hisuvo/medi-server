@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ordersService } from "./order.service";
+import { UserRole } from "../../constants/user-role";
 
 const getOrders = async (req: Request, res: Response) => {
   try {
@@ -103,8 +104,48 @@ const getOrderById = async (req: Request, res: Response) => {
   }
 };
 
+const updateOrderStatus = async (req: Request, res: Response) => {
+  // only seller can update order status
+  try {
+    const seller = req.user;
+
+    if (!seller) {
+      throw new Error("You are unauthorized!");
+    }
+
+    const { orderId } = req?.params;
+
+    if (!orderId || Array.isArray(orderId)) {
+      throw new Error("OrderId is required");
+    }
+
+    const isSeller = req.user?.role === UserRole.SELLER;
+
+    const result = await ordersService.updateOrderStatus(
+      req.body,
+      orderId,
+      isSeller,
+    );
+
+    res.status(209).json({
+      success: true,
+      message: "Order status updated successfully",
+      result,
+    });
+  } catch (error: any) {
+    let details = error.message ? error.message : error;
+
+    res.status(400).json({
+      success: true,
+      message: "Order status updated failed",
+      details,
+    });
+  }
+};
+
 export const ordersController = {
   getOrders,
   createOrders,
   getOrderById,
+  updateOrderStatus,
 };

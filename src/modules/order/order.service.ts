@@ -5,7 +5,7 @@ import { createOrdersPayload } from "./create-order.type";
 
 const getOrders = async (user: userType) => {
   // customer can see only their own orders
-  // admins and sellers can access all orders
+  // sellers can access all orders
 
   if (user.role === UserRole.CUSTOMER) {
     const ownOrder = await prisma.order.findMany({
@@ -50,7 +50,17 @@ const createOrders = async (payload: createOrdersPayload) => {
   return result;
 };
 
+const getOrderById = async (orderId: string, userId: string) => {
+  return await prisma.order.findFirst({
+    where: {
+      id: orderId,
+      userId,
+    },
+  });
+};
+
 export const ordersService = {
   getOrders,
   createOrders,
+  getOrderById,
 };

@@ -7,10 +7,16 @@ const router = Router();
 
 router.get(
   "/",
-  auth(UserRole.CUSTOMER, UserRole.SELLER, UserRole.ADMIN),
+  auth(UserRole.CUSTOMER, UserRole.SELLER),
   ordersController.getOrders,
 );
 
 router.post("/", auth(UserRole.CUSTOMER), ordersController.createOrders);
+
+router.get(
+  "/:orderId",
+  auth(UserRole.CUSTOMER, UserRole.SELLER),
+  ordersController.getOrderById,
+);
 
 export { router as OrderRouter };

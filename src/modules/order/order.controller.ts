@@ -36,15 +36,16 @@ const createOrders = async (req: Request, res: Response) => {
       throw new Error("You are unauthorized!");
     }
 
-    const { items } = req.body;
+    const { items, shipping } = req.body;
 
-    if (!items || items.length === 0) {
-      throw new Error("Order must have at least one item");
+    if (!items || (items.length === 0 && shipping)) {
+      throw new Error("Order must have at least one item or shopping address");
     }
 
     const result = await ordersService.createOrders({
       userId: user?.id,
       items,
+      shipping,
     });
 
     res.status(209).json({
@@ -63,14 +64,20 @@ const createOrders = async (req: Request, res: Response) => {
   }
 };
 // order client data
-/** 
-     * {
-        "items": [
-          { "medicineId": "med-uuid-1", "quantity": 2, "price": 50 },
-          { "medicineId": "med-uuid-2", "quantity": 1, "price": 20.5 }
-        ]
-      }
-    */
+
+// const orderItem = {
+//   items: [
+//     { medicineId: "med-uuid-1", quantity: 2, price: 50 },
+//     { medicineId: "med-uuid-2", quantity: 1, price: 20.5 },
+//   ],
+//   shipping: {
+//     name: "Suvo Datta",
+//     phone: "017xxxxxxx",
+//     address: "Dhanmondi",
+//     city: "Dhaka",
+//     postCode: "1209"
+//   },
+// };
 
 const getOrderById = async (req: Request, res: Response) => {
   try {
@@ -107,9 +114,9 @@ const getOrderById = async (req: Request, res: Response) => {
 const updateOrderStatus = async (req: Request, res: Response) => {
   // only seller can update order status
   try {
-    const seller = req.user;
+    const user = req.user;
 
-    if (!seller) {
+    if (!user) {
       throw new Error("You are unauthorized!");
     }
 
@@ -119,12 +126,10 @@ const updateOrderStatus = async (req: Request, res: Response) => {
       throw new Error("OrderId is required");
     }
 
-    const isSeller = req.user?.role === UserRole.SELLER;
-
     const result = await ordersService.updateOrderStatus(
       req.body,
       orderId,
-      isSeller,
+      user,
     );
 
     res.status(209).json({

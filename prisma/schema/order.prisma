@@ -5,14 +5,28 @@ model Order {
   user      User        @relation(fields: [userId], references: [id])
   userId    String
   total     Float
+  paymentMethod   PaymentMethodStatus  @default(COD)
   status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
   items     OrderItem[]
+  ShippingAddress ShippingAddress?
 
   @@index([userId])
   @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethodStatus {
+  COD
 }
 
 model OrderItem {
@@ -29,10 +43,14 @@ model OrderItem {
   @@map("orterItems")
 }
 
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
+model ShippingAddress {
+  id        String @id @default(uuid())
+  orderId   String @unique
+  name      String
+  phone     String
+  address   String
+  city      String
+  postCode  String
+
+  order     Order  @relation(fields: [orderId], references: [id])
 }

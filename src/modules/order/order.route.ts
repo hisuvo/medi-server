@@ -21,7 +21,7 @@ router.post("/", auth(UserRole.CUSTOMER), ordersController.createOrders);
 
 router.patch(
   "/:orderId",
-  auth(UserRole.SELLER),
+  auth(UserRole.CUSTOMER, UserRole.SELLER),
   ordersController.updateOrderStatus,
 );
 

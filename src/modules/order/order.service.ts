@@ -1,3 +1,4 @@
+import { OrderStatus } from "../../../generated/prisma/enums";
 import { UserRole } from "../../constants/user-role";
 import { prisma } from "../../lib/prisma";
 import { userType } from "../../types/user";
@@ -23,7 +24,7 @@ const getOrders = async (user: userType) => {
 };
 
 const createOrders = async (payload: createOrdersPayload) => {
-  const { userId, items } = payload;
+  const { userId, items, shipping } = payload;
 
   if (!userId) {
     throw new Error("User ID is required");
@@ -42,10 +43,15 @@ const createOrders = async (payload: createOrdersPayload) => {
           price: item.price,
         })),
       },
+
+      ShippingAddress: {
+        create: shipping,
+      },
     },
 
     include: {
       items: true,
+      ShippingAddress: true,
     },
   });
   return result;
@@ -79,9 +85,38 @@ const getOrderById = async (orderId: string, userId: string) => {
 const updateOrderStatus = async (
   payload: updateOrderStatusPayload,
   orderId: string,
-  isSeller: boolean,
+  user: userType,
 ) => {
-  if (!isSeller) {
+  const orderData = await prisma.order.findFirst({
+    where: {
+      id: orderId,
+    },
+    select: {
+      id: true,
+      userId: true,
+      status: true,
+    },
+  });
+
+  // * If order status is PENDING that customer can update CANCLE order
+  // * when order status drop on PROCESSING that customer can't update it
+
+  if (
+    user.role === UserRole.CUSTOMER &&
+    orderData?.status === OrderStatus.PENDING &&
+    orderData.userId === user.id
+  ) {
+    return await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: payload.status,
+      },
+    });
+  }
+
+  if (user.role !== UserRole.SELLER) {
     throw new Error("Only Seller can update user status");
   }
 

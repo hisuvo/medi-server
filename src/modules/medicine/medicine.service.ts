@@ -1,8 +1,49 @@
+import { Prisma } from "../../../generated/prisma/client";
+import { MedicineWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { medicinePayload } from "./medinice.type";
 
-const getMedicines = async () => {
+const getMedicines = async (payload: {
+  search: string;
+  isActive: boolean | undefined;
+}) => {
+  const { search, isActive } = payload;
+
+  const andConditions: MedicineWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        {
+          name: {
+            contains: payload.search,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          manufacturer: {
+            contains: payload.search,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          description: {
+            contains: payload.search,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+      ],
+    });
+  }
+
+  if (typeof isActive === "boolean") {
+    andConditions.push({ isActive });
+  }
+
   return await prisma.medicine.findMany({
+    where: {
+      AND: andConditions,
+    },
     include: {
       reviews: true,
     },

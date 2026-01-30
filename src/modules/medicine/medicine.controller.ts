@@ -4,7 +4,21 @@ import { UserRole } from "../../constants/user-role";
 
 const getMedicines = async (req: Request, res: Response) => {
   try {
-    const result = await medicineService.getMedicines();
+    const searchQueryString = (value: unknown): string =>
+      typeof value === "string" ? value : "";
+
+    const isActive = req.query.isActive
+      ? req.query.isActive === "true"
+        ? true
+        : req.query.isActive === "false"
+          ? false
+          : undefined
+      : undefined;
+
+    const result = await medicineService.getMedicines({
+      search: searchQueryString(req.query.search),
+      isActive,
+    });
 
     res.status(200).json({
       success: true,

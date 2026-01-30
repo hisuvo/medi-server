@@ -7,7 +7,6 @@ import { updateOrderStatusPayload } from "./udpate-order.type";
 
 const getOrders = async (user: userType) => {
   // customer can see only their own orders
-  // sellers can access her own medicines all orders
 
   if (user.role === UserRole.CUSTOMER) {
     const ownOrder = await prisma.order.findMany({
@@ -22,6 +21,20 @@ const getOrders = async (user: userType) => {
     return ownOrder;
   }
 
+  // admin can access all orders
+
+  if (user.role === UserRole.ADMIN) {
+    const allOrder = await prisma.order.findMany({
+      include: {
+        items: true,
+      },
+    });
+
+    return allOrder;
+  }
+
+  // sellers can access her own created medicines orders
+
   const ordersData = await prisma.order.findMany({
     where: {
       items: {
@@ -31,6 +44,15 @@ const getOrders = async (user: userType) => {
           },
         },
       },
+    },
+
+    include: {
+      items: {
+        include: {
+          medicine: true,
+        },
+      },
+      user: true,
     },
   });
   return ordersData;

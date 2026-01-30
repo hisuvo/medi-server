@@ -7,7 +7,7 @@ const router = Router();
 
 router.get(
   "/",
-  auth(UserRole.CUSTOMER, UserRole.SELLER),
+  auth(UserRole.CUSTOMER, UserRole.SELLER, UserRole.ADMIN),
   ordersController.getOrders,
 );
 

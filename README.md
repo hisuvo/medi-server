@@ -57,3 +57,13 @@ http://localhost:5000/api/v1/orders/21e7d004-b1cc-4489-bc81-0bd8dbefb200
 <!-- only customer can reviews -->
 
 http://localhost:5000/api/v1/reviews
+
+<!--  -->
+
+## git clone https://github.com/hisuvo/medi-server.git
+
+## pnpm i
+
+## pnpm dlx prisma migrate dev --name init
+
+## pnpm dlx prisma generate

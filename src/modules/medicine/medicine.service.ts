@@ -2,7 +2,11 @@ import { prisma } from "../../lib/prisma";
 import { medicinePayload } from "./medinice.type";
 
 const getMedicines = async () => {
-  return await prisma.medicine.findMany();
+  return await prisma.medicine.findMany({
+    include: {
+      reviews: true,
+    },
+  });
 };
 
 const getMedicineById = async (medicineId: string) => {

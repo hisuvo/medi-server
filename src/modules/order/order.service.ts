@@ -7,19 +7,32 @@ import { updateOrderStatusPayload } from "./udpate-order.type";
 
 const getOrders = async (user: userType) => {
   // customer can see only their own orders
-  // sellers can access all orders
+  // sellers can access her own medicines all orders
 
   if (user.role === UserRole.CUSTOMER) {
     const ownOrder = await prisma.order.findMany({
       where: {
-        id: user.id,
+        userId: user.id,
+      },
+      include: {
+        items: true,
       },
     });
 
     return ownOrder;
   }
 
-  const ordersData = await prisma.order.findMany();
+  const ordersData = await prisma.order.findMany({
+    where: {
+      items: {
+        some: {
+          medicine: {
+            sellerId: user.id,
+          },
+        },
+      },
+    },
+  });
   return ordersData;
 };
 
@@ -99,7 +112,8 @@ const updateOrderStatus = async (
   });
 
   // * If order status is PENDING that customer can update CANCLE order
-  // * when order status drop on PROCESSING that customer can't update it
+  // * When order status drop on PROCESSING that customer can't update it
+  // * Seller change all order status without canclled order
 
   if (
     user.role === UserRole.CUSTOMER &&
@@ -118,6 +132,10 @@ const updateOrderStatus = async (
 
   if (user.role !== UserRole.SELLER) {
     throw new Error("Only Seller can update user status");
+  }
+
+  if (orderData?.status === OrderStatus.CANCELLED) {
+    throw new Error("You can not cancelled order status");
   }
 
   const result = await prisma.order.update({

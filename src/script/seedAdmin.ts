@@ -15,7 +15,7 @@ async function seedAdmin() {
     // check user exist on db or not
     const existingUser = await prisma.user.findUnique({
       where: {
-        email: adminData.email,
+        email: adminData.email as string,
       },
     });
 
@@ -38,7 +38,7 @@ async function seedAdmin() {
       console.log("**** Admin created");
       await prisma.user.update({
         where: {
-          email: adminData.email,
+          email: adminData.email as string,
         },
         data: {
           emailVerified: true,

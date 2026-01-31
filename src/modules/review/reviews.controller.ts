@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { reviewsService } from "./reviews.service";
-import { UserRole } from "../../constants/user-role";
 
 const getReviews = async (req: Request, res: Response) => {
   try {

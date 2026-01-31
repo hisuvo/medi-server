@@ -3,7 +3,7 @@ import { ordersController } from "./order.controller";
 import auth from "../../middleware/auth";
 import { UserRole } from "../../constants/user-role";
 
-const router = Router();
+const router: Router = Router();
 
 router.get(
   "/",

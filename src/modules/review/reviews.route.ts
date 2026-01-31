@@ -3,7 +3,7 @@ import { reviewsController } from "./reviews.controller";
 import { UserRole } from "../../constants/user-role";
 import auth from "../../middleware/auth";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", () => {});
 

@@ -6,8 +6,11 @@ import { medicinePayload } from "./medinice.type";
 const getMedicines = async (payload: {
   search: string;
   isActive: boolean | undefined;
+  page: number;
+  limit: number;
+  skip: number;
 }) => {
-  const { search, isActive } = payload;
+  const { search, isActive, limit, skip } = payload;
 
   const andConditions: MedicineWhereInput[] = [];
 
@@ -41,6 +44,8 @@ const getMedicines = async (payload: {
   }
 
   return await prisma.medicine.findMany({
+    take: limit,
+    skip,
     where: {
       AND: andConditions,
     },

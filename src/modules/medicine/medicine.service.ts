@@ -9,8 +9,10 @@ const getMedicines = async (payload: {
   page: number;
   limit: number;
   skip: number;
+  sortBy: string;
+  sortOrder: string;
 }) => {
-  const { search, isActive, limit, skip } = payload;
+  const { search, isActive, limit, skip, sortBy, sortOrder } = payload;
 
   const andConditions: MedicineWhereInput[] = [];
 
@@ -49,9 +51,12 @@ const getMedicines = async (payload: {
     where: {
       AND: andConditions,
     },
-    include: {
-      reviews: true,
+    orderBy: {
+      [sortBy]: sortOrder,
     },
+    // include: {
+    //   reviews: true,
+    // },
   });
 };
 

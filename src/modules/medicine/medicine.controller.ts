@@ -20,14 +20,14 @@ const getMedicines = async (req: Request, res: Response) => {
       req.query,
     );
 
-    console.log(page, limit);
-
     const result = await medicineService.getMedicines({
       search: searchQueryString(req.query.search),
       isActive,
       page,
       limit,
       skip,
+      sortBy,
+      sortOrder,
     });
 
     res.status(200).json({

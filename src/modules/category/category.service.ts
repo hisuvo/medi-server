@@ -2,20 +2,55 @@ import { prisma } from "../../lib/prisma";
 import { CreateCategoryPayload } from "./create-category.type";
 
 const getCategory = async () => {
-  return await prisma.category.findMany();
+  return await prisma.category.findMany({
+    include: {
+      _count: {
+        select: {
+          medicines: true,
+        },
+      },
+    },
+  });
+};
+
+const getCategoryById = async (payload: { categoryId: string }) => {
+  return await prisma.category.findUniqueOrThrow({
+    where: {
+      id: payload.categoryId,
+    },
+
+    include: {
+      medicines: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          isActive: true,
+          stock: true,
+          seller: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+  });
 };
 
 const createCategory = async (payload: CreateCategoryPayload) => {
-  const res = await prisma.category.create({
+  const result = await prisma.category.create({
     data: payload,
   });
 
-  return res;
+  return result;
 };
 
 export const categoryService = {
   getCategory,
   createCategory,
+  getCategoryById,
 };
 
 /**

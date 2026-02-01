@@ -18,6 +18,29 @@ const getCategory = async (req: Request, res: Response) => {
   }
 };
 
+const getCategoryById = async (req: Request, res: Response) => {
+  try {
+    const { categoryId } = req.params;
+
+    if (!categoryId || Array.isArray(categoryId)) {
+      throw new Error("You are unauthrozied");
+    }
+
+    const result = await categoryService.getCategoryById({ categoryId });
+
+    res.status(200).json({
+      success: true,
+      message: "Categories retrived successfully",
+      result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: "Comment creation failed",
+      details: error,
+    });
+  }
+};
+
 const createCategory = async (req: Request, res: Response) => {
   try {
     const result = await categoryService.createCategory(req.body);
@@ -38,4 +61,5 @@ const createCategory = async (req: Request, res: Response) => {
 export const categoryController = {
   createCategory,
   getCategory,
+  getCategoryById,
 };

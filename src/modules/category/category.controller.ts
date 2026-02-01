@@ -72,16 +72,16 @@ const deleteCategory = async (req: Request, res: Response) => {
       throw new Error("You are unauthrozied");
     }
 
-    const result = await categoryService.getCategoryById({ categoryId });
+    const result = await categoryService.deleteCategory(categoryId);
 
     res.status(200).json({
       success: true,
-      message: "Categories retrived successfully",
+      message: "Categories deleted successfully",
       result,
     });
   } catch (error) {
     res.status(400).json({
-      error: "Comment creation failed",
+      error: "Categories deleted failed",
       details: error,
     });
   }

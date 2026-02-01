@@ -9,9 +9,17 @@ router.get("/", categoryController.getCategory);
 
 router.get("/:categoryId", categoryController.getCategoryById);
 
-router.patch("/:categoryId", categoryController.updateCategory);
+router.patch(
+  "/:categoryId",
+  auth(UserRole.ADMIN),
+  categoryController.updateCategory,
+);
 
-router.delete("/:categoryId", categoryController.getCategoryById);
+router.delete(
+  "/:categoryId",
+  auth(UserRole.ADMIN),
+  categoryController.deleteCategory,
+);
 
 router.post("/", auth(UserRole.ADMIN), categoryController.createCategory);
 

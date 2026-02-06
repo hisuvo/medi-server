@@ -6,11 +6,11 @@
 <!-- medicine api -->
 <!-- create medicine done (SELLER) -->
 
-http://localhost:5000/api/v1/medicine
+http://localhost:5000/api/v1/medicines
 
 <!-- get medicine done (ALL) -->
 
-http://localhost:5000/api/v1/medicine
+http://localhost:5000/api/v1/medicines
 
 <!-- get specifice medicine  -->
 

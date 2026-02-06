@@ -3,7 +3,6 @@ import { prisma } from "../lib/prisma";
 
 async function seedAdmin() {
   try {
-    console.log("***** Admin Seeding Started....");
     const adminData = {
       name: process.env.ADMIN_NAME,
       email: process.env.ADMIN_EMAIL,
@@ -11,7 +10,6 @@ async function seedAdmin() {
       password: process.env.ADMIN_PASS,
     };
 
-    console.log("***** Checking Admin Exist or not");
     // check user exist on db or not
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -44,12 +42,8 @@ async function seedAdmin() {
           emailVerified: true,
         },
       });
-
-      console.log("**** Email verification status updated!");
     }
-    console.log("******* SUCCESS ******");
   } catch (error) {
-    console.log("suvo datta");
     console.error(error);
   }
 }
